@@ -1,4 +1,4 @@
-function Entity(s, nextTo) {
+function Entity(s, name, nextTo) {
     Element.call(this, s);
     
     this.SERVICE_WIDTH = 150;
@@ -11,6 +11,7 @@ function Entity(s, nextTo) {
     };
     
     this.snap = s;
+    this.name = name;
     
     if(!nextTo) {
         this.x = 0;
@@ -45,4 +46,17 @@ Entity.prototype.draw = function() {
         this.SERVICE_WIDTH, this.SERVICE_HEIGHT
     );
     this.rect.attr(this.SERVICE_ATTR);
+    
+    // TODO : fix the centering
+    var size = this.name.length * 5;
+    this.text = this.snap.text(
+        this.rect.getBBox().cx - size,
+        this.rect.getBBox().cy + size / 10,
+        this.name
+    );
+    this.text.attr({
+      fontFamily: 'Arial',
+      fontSize: 20,
+      textAnchor: 'left'
+    });
 }   

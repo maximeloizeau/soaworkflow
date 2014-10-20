@@ -1,9 +1,10 @@
-function Assignment(s, x, y) {
+function Assignment(s, name, x, y) {
     Element.call(this, s);
     
     this.WIDTH = 100;
     this.HEIGHT = 40;
     
+    this.name = name;
     this.x = x;
     this.y = y;
 }
@@ -25,5 +26,18 @@ Assignment.prototype.draw = function() {
         fill: "#e58282",
         stroke: "#000",
         strokeWidth: 0.5
+    });
+    
+    // TODO : fix the centering
+    var size = this.name.length * 5;
+    this.text = this.snap.text(
+        this.rect.getBBox().cx - size,
+        this.rect.getBBox().cy + size / 7,
+        this.name
+    );
+    this.text.attr({
+      fontFamily: 'Arial',
+      fontSize: 16,
+      textAnchor: 'left'
     });
 }

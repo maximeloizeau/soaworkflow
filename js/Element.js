@@ -15,13 +15,18 @@ Element.prototype.onElementClick = function(entity, mouseevent) {
 }
 
 Element.prototype.link = function() {
+    var serviceName = prompt("Enter method name and its argument", "method(arg1, arg2)");
+    
+    // Create service call rectangle
     var sCall = new ServiceCall(
         this.snap,
+        serviceName,
         clickState.dest.getBBox().cx,
         clickState.destMouse.clientY
     );
     sCall.draw();
     
+    // Create link
     var endX;
     if(clickState.target.getBBox().cx > sCall.rect.getBBox().x) {
         endX = sCall.rect.getBBox().x2;
@@ -47,13 +52,17 @@ Element.prototype.link = function() {
     sArrow.draw();
     
     
+    // Create assignment box
+    var serviceName = prompt("Enter variable name", "var1");
     var assignment = new Assignment(
         this.snap,
+        serviceName,
         clickState.target.getBBox().cx,
         clickState.destMouse.clientY + sCall.rect.getBBox().height
     );
     assignment.draw();
     
+    // Create arrow from service call to assignment
     f = Math.abs(assignment.rect.getBBox().x2 - sCall.rect.getBBox().x2);
     e = Math.abs(assignment.rect.getBBox().x - sCall.rect.getBBox().x2);
     if(f > e) {
@@ -70,7 +79,7 @@ Element.prototype.link = function() {
     );
     returnArrow.draw();
 
-    
+    // Reset click state
     clickState.state = CLICK_STATE.NO_CLICK;
     clickState.target = undefined;
     clickState.dest = undefined;

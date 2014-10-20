@@ -17,10 +17,12 @@ function addEntryPoint(entity) {
 function draw() {   
     s = Snap(1000, 1000);
     
-    var composite = new Entity(s);
+    var composite = new Entity(s, "Composite");
     composite.draw();
-    var bet = new Entity(s, composite);
+    var bet = new Entity(s, "Bet Service", composite);
     bet.draw();
+    var odds = new Entity(s, "Odds Service", bet);
+    odds.draw();
 
     
     //addEntryPoint(composite);
