@@ -7,8 +7,21 @@
         <script src="js/Assignment.js"></script>
         <script src="js/Entity.js"></script>
         <script src="js/ServiceCall.js"></script>
+        <script src="js/CompositeCode.js"></script>
+        
+        <link rel="stylesheet" href="style.css" />
     </head>
     
     <body>
+        <nav id="toolbar">
+            <label class="toggle-btn"><input type="radio" name="objectType" value="serviceCall" checked="checked"/>Service call</label>
+            <label class="toggle-btn"><input type="radio" name="objectType" value="compositeCode"/>Composite code</label>
+            <label class="toggle-btn"><input type="radio" name="objectType" value="ifElse"/>If/Else</label>
+            
+            <button id="generate">Generate</button>
+            
+            <textarea id="generated-workflow" rows=20></textarea>
+        </nav>
+        <svg id="svg"></svg>
     </body>
 </html>

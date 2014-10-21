@@ -20,7 +20,7 @@ Assignment.prototype.draw = function() {
        this.HEIGHT
    );
    
-    this.rect.click(this.onElementClick.bind(this, this.rect));
+    this.rect.click(this.onElementClick.bind(this, this));
    
     this.rect.attr({
         fill: "#e58282",
@@ -40,4 +40,12 @@ Assignment.prototype.draw = function() {
       fontSize: 16,
       textAnchor: 'left'
     });
+}
+
+Assignment.prototype.getObject = function() {
+    return this.rect;
+}
+
+Assignment.prototype.getWorkflowCode = function() {
+    return "";
 }

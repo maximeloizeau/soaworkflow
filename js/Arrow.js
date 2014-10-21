@@ -56,3 +56,7 @@ Arrow.prototype.draw = function() {
         fill: "#9d9d9d"
     });
 }
+
+Arrow.prototype.getObject = function() {
+    return this.line;
+}

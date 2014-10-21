@@ -22,6 +22,8 @@ function Entity(s, name, nextTo) {
     }
 
     this.neighbor = nextTo;
+    
+    this.callsFromEntity = [];
 }
 
 Entity.prototype = Object.create(Element.prototype);
@@ -39,7 +41,7 @@ Entity.prototype.draw = function() {
         strokeWidth: 6
     });
     
-    this.lifeLine.click(this.onElementClick.bind(this, this.lifeLine));
+    this.lifeLine.click(this.onElementClick.bind(this, this));
     
     this.rect = this.snap.rect(
         this.x, this.y,
@@ -60,3 +62,15 @@ Entity.prototype.draw = function() {
       textAnchor: 'left'
     });
 }   
+
+Entity.prototype.getObject = function() {
+    return this.lifeLine;
+}
+
+Entity.prototype.getWorkflowCode = function() {
+    return "";
+}
+
+Entity.prototype.getServiceName = function() {
+    return this.name;
+}

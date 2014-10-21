@@ -1,46 +1,70 @@
 function Element(s) {
     this.snap = s;
+    
+    this.previous = undefined;
+    this.next = undefined;
 }
 
 Element.prototype.onElementClick = function(entity, mouseevent) {
-    if(clickState.state == CLICK_STATE.NO_CLICK) {
-        clickState.target = entity;
-        clickState.targetMouse = mouseevent;
-        clickState.state = CLICK_STATE.FIRST_CLICK;
-    } else if(clickState.state == CLICK_STATE.FIRST_CLICK) {
-        clickState.dest = entity;
-        clickState.destMouse = mouseevent;
-        this.link();
+    // Get the selected object type
+    objectType = document.querySelector('input[name="objectType"]:checked').value;
+    
+    if(objectType == OBJECT_TYPE.SERVICE_CALL) {
+        if(clickState.state == CLICK_STATE.NO_CLICK) {
+            clickState.target = entity;
+            clickState.targetMouse = mouseevent;
+            clickState.state = CLICK_STATE.FIRST_CLICK;
+        } else if(clickState.state == CLICK_STATE.FIRST_CLICK) {
+            clickState.dest = entity;
+            clickState.destMouse = mouseevent;
+            this.link();
+        }
+    } else if(objectType == OBJECT_TYPE.COMPOSITE_CODE) {
+        
+        var codeText = prompt("Enter the code you want");
+        var compositeCode = new CompositeCode(
+            this.snap,
+            codeText,
+            entity.getObject().getBBox().cx,
+            mouseevent.clientY
+        );
+        compositeCode.draw();
+        
+        entity.callsFromEntity.push(compositeCode);
+        
+    } else if(objectType == OBJECT_TYPE.IF_ELSE) {
+        
     }
 }
 
 Element.prototype.link = function() {
     var serviceName = prompt("Enter method name and its argument", "method(arg1, arg2)");
-    
+        
     // Create service call rectangle
     var sCall = new ServiceCall(
         this.snap,
         serviceName,
-        clickState.dest.getBBox().cx,
+        clickState.dest,
+        clickState.dest.getObject().getBBox().cx,
         clickState.destMouse.clientY
     );
     sCall.draw();
     
     // Create link
     var endX;
-    if(clickState.target.getBBox().cx > sCall.rect.getBBox().x) {
-        endX = sCall.rect.getBBox().x2;
+    if(clickState.target.getObject().getBBox().cx > sCall.getObject().getBBox().x) {
+        endX = sCall.getObject().getBBox().x2;
     } else {
-        endX = sCall.rect.getBBox().x;
+        endX = sCall.getObject().getBBox().x;
     }
     
     var startX;
-    var f = Math.abs(clickState.target.getBBox().x - endX),
-        e = Math.abs(clickState.target.getBBox().x2 - endX);
+    var f = Math.abs(clickState.target.getObject().getBBox().x - endX),
+        e = Math.abs(clickState.target.getObject().getBBox().x2 - endX);
     if(f > e) {
-        startX = clickState.target.getBBox().x2;
+        startX = clickState.target.getObject().getBBox().x2;
     } else {
-        startX = clickState.target.getBBox().x;
+        startX = clickState.target.getObject().getBBox().x;
     }
     var sArrow = new Arrow(
         this.snap,
@@ -57,27 +81,40 @@ Element.prototype.link = function() {
     var assignment = new Assignment(
         this.snap,
         serviceName,
-        clickState.target.getBBox().cx,
-        clickState.destMouse.clientY + sCall.rect.getBBox().height
+        clickState.target.getObject().getBBox().cx,
+        clickState.destMouse.clientY + sCall.getObject().getBBox().height
     );
     assignment.draw();
     
     // Create arrow from service call to assignment
-    f = Math.abs(assignment.rect.getBBox().x2 - sCall.rect.getBBox().x2);
-    e = Math.abs(assignment.rect.getBBox().x - sCall.rect.getBBox().x2);
+    f = Math.abs(assignment.getObject().getBBox().x2 - sCall.getObject().getBBox().x2);
+    e = Math.abs(assignment.getObject().getBBox().x - sCall.getObject().getBBox().x2);
     if(f > e) {
-        endX = assignment.rect.getBBox().x;
+        endX = assignment.getObject().getBBox().x;
     } else {
-        endX = assignment.rect.getBBox().x2;
+        endX = assignment.getObject().getBBox().x2;
     }
     var returnArrow = new Arrow(
         this.snap,
-        sCall.rect.getBBox().x2 - sCall.rect.getBBox().width/2,
-        sCall.rect.getBBox().y + sCall.rect.getBBox().height,
+        sCall.getObject().getBBox().x2 - sCall.getObject().getBBox().width/2,
+        sCall.getObject().getBBox().y + sCall.getObject().getBBox().height,
         endX,
-        assignment.rect.getBBox().y + assignment.rect.getBBox().height/2
+        assignment.getObject().getBBox().y + assignment.getObject().getBBox().height/2
     );
     returnArrow.draw();
+    
+    sCall.previous = clickState.dest;
+    sCall.next = assignment;
+    assignment.previous = sCall;
+    
+    if(clickState.target instanceof Entity) {
+        clickState.target.callsFromEntity.push(sCall);
+    }
+    
+    if(!chainStart) {
+        chainStart = sCall;
+    }
+    
 
     // Reset click state
     clickState.state = CLICK_STATE.NO_CLICK;

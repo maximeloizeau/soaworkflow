@@ -1,10 +1,11 @@
-function ServiceCall(s, name, x, y) {
+function ServiceCall(s, name, entity, x, y) {
     Element.call(this, s);
     
     this.CALL_WIDTH = 100;
     this.CALL_HEIGHT = 40;
     
     this.name = name;
+    this.serviceParent = entity;
     this.x = x;
     this.y = y;
 }
@@ -20,7 +21,7 @@ ServiceCall.prototype.draw = function() {
        this.CALL_HEIGHT
    );
    
-    this.rect.click(this.onElementClick.bind(this, this.rect));
+    this.rect.click(this.onElementClick.bind(this, this));
    
     this.rect.attr({
         fill: "#e3e3e3",
@@ -74,4 +75,18 @@ ServiceCall.prototype.mouseout = function() {
     
     this.text.mouseover(this.mouseover.bind(this));
     this.text.mouseout(this.mouseout.bind(this));
+}
+
+ServiceCall.prototype.getObject = function() {
+    return this.rect;
+}
+
+ServiceCall.prototype.getWorkflowCode = function() {
+    var text = "";
+    if(this.next instanceof Assignment) {
+        text = text + this.next.name + " = ";
+    }
+    
+    text = text + this.serviceParent.getServiceName() + "." + this.name;
+    return text;
 }

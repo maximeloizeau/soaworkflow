@@ -1,3 +1,20 @@
-#test {
-    color: #978bf2;
+#svg {
+    width: 1000px;
+    height: 1000px;
+}
+
+#toolbar {
+    display: block;
+    position: absolute;
+    width: 300px;
+    top: 0;
+    right: 0;
+}
+
+#toolbar label {
+    display: block;
+}
+
+#toolbar textarea {
+    width: 100%;
 }
