@@ -6,7 +6,9 @@ var CLICK_STATE = {
 var OBJECT_TYPE = {
     SERVICE_CALL: "serviceCall",
     COMPOSITE_CODE: "compositeCode",
-    IF_ELSE: "ifElse"
+    IF: "if",
+    ELSE: "else",
+    ENDIF: "endIf"
 }
 
 function addEntryPoint(entity) {
@@ -25,16 +27,38 @@ function draw() {
     
     var composite = new Entity(s, "Composite");
     composite.draw();
-    var bet = new Entity(s, "BetService", composite);
-    bet.draw();
-    var odds = new Entity(s, "OddsService", bet);
+    var odds = new Entity(s, "OddsService", composite);
     odds.draw();
-
+    var sports = new Entity(s, "SportsService", odds);
+    sports.draw();
+    
     
     document.getElementById("generate").addEventListener('click', function() {
         var workflowText = generateWorkflow(composite);
         console.log(workflowText);
         document.getElementById("generated-workflow").value = workflowText;
+    });
+    
+    document.addEventListener("keypress", function(key) {   
+        
+        if(key.which == 99) { // letter C
+            if(objectType == OBJECT_TYPE.SERVICE_CALL) {
+                document.querySelector('input[value="' + OBJECT_TYPE.COMPOSITE_CODE + '"]').checked = "checked";
+                objectType = OBJECT_TYPE.COMPOSITE_CODE;
+            } else if(objectType == OBJECT_TYPE.COMPOSITE_CODE) {
+                document.querySelector('input[value="' + OBJECT_TYPE.IF + '"]').checked = "checked";
+                objectType = OBJECT_TYPE.IF;
+            } else if(objectType == OBJECT_TYPE.IF) {
+                document.querySelector('input[value="' + OBJECT_TYPE.ELSE + '"]').checked = "checked";
+                objectType = OBJECT_TYPE.ELSE;
+            }  else if(objectType == OBJECT_TYPE.ELSE) {
+                document.querySelector('input[value="' + OBJECT_TYPE.ENDIF + '"]').checked = "checked";
+                objectType = OBJECT_TYPE.ENDIF;
+            } else if(objectType == OBJECT_TYPE.ENDIF) {
+                document.querySelector('input[value="' + OBJECT_TYPE.SERVICE_CALL + '"]').checked = "checked";
+                objectType = OBJECT_TYPE.SERVICE_CALL;
+            }
+        }
     });
     
     //addEntryPoint(composite);

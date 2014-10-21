@@ -11,10 +11,14 @@ Element.prototype.onElementClick = function(entity, mouseevent) {
     
     if(objectType == OBJECT_TYPE.SERVICE_CALL) {
         if(clickState.state == CLICK_STATE.NO_CLICK) {
+            this.addClickPoint(entity.getObject().getBBox().cx, mouseevent.clientY);
+            
             clickState.target = entity;
             clickState.targetMouse = mouseevent;
             clickState.state = CLICK_STATE.FIRST_CLICK;
         } else if(clickState.state == CLICK_STATE.FIRST_CLICK) {
+            this.removeClickPoint();
+            
             clickState.dest = entity;
             clickState.destMouse = mouseevent;
             this.link();
@@ -32,8 +36,53 @@ Element.prototype.onElementClick = function(entity, mouseevent) {
         
         entity.callsFromEntity.push(compositeCode);
         
-    } else if(objectType == OBJECT_TYPE.IF_ELSE) {
+    } else if(objectType == OBJECT_TYPE.IF) {
         
+        var conditionText = prompt("Enter the full condition for the IF");
+        var conditionnal = new ConditionnalIf(
+            this.snap,
+            conditionText,
+            entity.getObject().getBBox().cx,
+            mouseevent.clientY
+        );
+        conditionnal.draw();
+        
+        entity.callsFromEntity.push(conditionnal);
+    } else if(objectType == OBJECT_TYPE.ELSE) {
+        
+        var conditionnal = new ConditionnalElse(
+            this.snap,
+            entity.getObject().getBBox().cx,
+            mouseevent.clientY
+        );
+        conditionnal.draw();
+        
+        entity.callsFromEntity.push(conditionnal);
+    } else if(objectType == OBJECT_TYPE.ENDIF) {
+        
+        var conditionnal = new ConditionnalEndIf(
+            this.snap,
+            entity.getObject().getBBox().cx,
+            mouseevent.clientY
+        );
+        conditionnal.draw();
+        
+        entity.callsFromEntity.push(conditionnal);
+    }
+}
+
+Element.prototype.addClickPoint = function(x, y) {
+    this.removeClickPoint();
+    
+    clickState.clickPoint = this.snap.circle(x, y - 5, 5);
+    clickState.clickPoint.attr({
+        fill: "#d32101"
+    });
+}
+
+Element.prototype.removeClickPoint = function() {
+    if(clickState.clickPoint) {
+        clickState.clickPoint.remove();
     }
 }
 
