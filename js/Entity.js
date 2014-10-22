@@ -40,6 +40,7 @@ Entity.prototype.draw = function() {
         stroke: "#199127",
         strokeWidth: 6
     });
+    this.lifeLine.addClass("clickable");
     
     this.lifeLine.click(this.onElementClick.bind(this, this));
     

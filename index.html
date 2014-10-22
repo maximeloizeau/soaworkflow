@@ -2,6 +2,7 @@
     <head>
         <script src="lib/snap.svg-min.js"></script>
         <script src="js/diagram.js"></script>
+        <script src="js/Editor.js"></script>
         <script src="js/Element.js"></script>
         <script src="js/Arrow.js"></script>
         <script src="js/Assignment.js"></script>
@@ -11,17 +12,29 @@
         <script src="js/ConditionnalIf.js"></script>
         <script src="js/ConditionnalElse.js"></script>
         <script src="js/ConditionnalEndIf.js"></script>
+        <script src="js/ForLoop.js"></script>
+        <script src="js/EndFor.js"></script>
         
         <link rel="stylesheet" href="style.css" />
     </head>
     
     <body>
         <nav id="toolbar">
+            <input type="text" id="entityName" /><button id="addEntity">Add entity</button>
+
+            <label class="labelinput" for="inputs">Input parameters (separated by commas) :</label>
+            <input type="text" id="inputs" />
+
+            <label class="labelinput" for="output">Output parameter :</label>
+            <input type="text" id="output" />
+
             <label class="toggle-btn"><input type="radio" name="objectType" value="serviceCall" checked="checked"/>Service call</label>
             <label class="toggle-btn"><input type="radio" name="objectType" value="compositeCode"/>Composite code</label>
             <label class="toggle-btn"><input type="radio" name="objectType" value="if"/>If</label>
             <label class="toggle-btn"><input type="radio" name="objectType" value="else"/>Else</label>
             <label class="toggle-btn"><input type="radio" name="objectType" value="endIf"/>EndIf</label>
+            <label class="toggle-btn"><input type="radio" name="objectType" value="forLoop"/>ForLoop</label>
+            <label class="toggle-btn"><input type="radio" name="objectType" value="endFor"/>EndFor</label>
             
             <button id="generate">Generate</button>
             

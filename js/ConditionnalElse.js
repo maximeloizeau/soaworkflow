@@ -1,8 +1,6 @@
 function ConditionnalElse(s, x, y) {
-    Element.call(this, s);
-    
-    this.CALL_WIDTH = 30;
-    
+    ConditionnalIf.call(this, s);
+
     this.condition = "else";
     this.x = x;
     this.y = y;

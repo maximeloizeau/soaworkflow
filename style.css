@@ -7,14 +7,56 @@
     display: block;
     position: absolute;
     width: 300px;
-    top: 0;
+    top: 20px;
     right: 0;
 }
 
 #toolbar label {
     display: block;
+    padding: 5px;
+    background-color: rgb(197, 245, 245);
+    border-bottom: solid 1px rgb(192, 211, 218);
 }
 
 #toolbar textarea {
     width: 100%;
+    border: none;
+}
+
+#generate {
+    display: block;
+    width: 100px;
+    margin: auto;
+    margin-top: 40px;
+    margin-bottom: 20px;
+    padding: 10px;
+}
+
+#inputs, #output {
+    width: 100%;
+    border: solid 1px rgb(192, 211, 218);
+    height: 30px;
+    padding-left: 5px;
+}
+
+#output {
+    margin-bottom: 20px;
+}
+
+.labelinput {
+    margin-top: 20px;
+}
+
+#entityName {
+    width: 75%;
+    height: 30px;
+}
+
+#addEntity {
+    width: 25%;
+    height: 30px;
+}
+
+.clickable {
+    cursor: pointer;
 }

@@ -34,8 +34,8 @@ CompositeCode.prototype.draw = function() {
     );
     this.text.attr({
       fontFamily: 'Arial',
-      fontSize: 20,
-      textAnchor: 'left'
+      fontSize: 14,
+      textAnchor: 'center'
     });
 }
 

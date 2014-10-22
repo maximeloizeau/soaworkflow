@@ -1,7 +1,7 @@
 function ConditionnalIf(s, condition, x, y) {
     Element.call(this, s);
     
-    this.CALL_WIDTH = 30;
+    this.CALL_WIDTH = 20;
     
     this.condition = condition;
     this.x = x;
@@ -23,9 +23,7 @@ ConditionnalIf.prototype.draw = function() {
     );
       
     this.rect.attr({
-        fill: "#207133",
-        stroke: "#000",
-        strokeWidth: 0.5
+        fill: "#50e272"
     });
     
     var size = this.condition.length * 4;
@@ -47,5 +45,5 @@ ConditionnalIf.prototype.getObject = function() {
 }
 
 ConditionnalIf.prototype.getWorkflowCode = function() {
-    return "if { " + this.condition;
+    return "if(" + this.condition + ") {";
 }

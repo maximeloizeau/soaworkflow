@@ -1,7 +1,5 @@
 function ConditionnalEndIf(s, x, y) {
-    Element.call(this, s);
-    
-    this.CALL_WIDTH = 30;
+    ConditionnalIf.call(this, s);
     
     this.condition = "endif";
     this.x = x;

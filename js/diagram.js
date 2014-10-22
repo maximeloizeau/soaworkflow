@@ -8,7 +8,9 @@ var OBJECT_TYPE = {
     COMPOSITE_CODE: "compositeCode",
     IF: "if",
     ELSE: "else",
-    ENDIF: "endIf"
+    ENDIF: "endIf",
+    FORLOOP: "forLoop",
+    ENDFOR: "endFor"
 }
 
 function addEntryPoint(entity) {
@@ -25,13 +27,13 @@ function addEntryPoint(entity) {
 function draw() {   
     s = Snap("#svg");
     
+    services = [];
+
     var composite = new Entity(s, "Composite");
     composite.draw();
-    var odds = new Entity(s, "OddsService", composite);
-    odds.draw();
-    var sports = new Entity(s, "SportsService", odds);
-    sports.draw();
+    services.push(composite);
     
+    addEntity("OddsService");
     
     document.getElementById("generate").addEventListener('click', function() {
         var workflowText = generateWorkflow(composite);
@@ -40,8 +42,7 @@ function draw() {
     });
     
     document.addEventListener("keypress", function(key) {   
-        
-        if(key.which == 99) { // letter C
+        if(key.which == 178) { // key "²"
             if(objectType == OBJECT_TYPE.SERVICE_CALL) {
                 document.querySelector('input[value="' + OBJECT_TYPE.COMPOSITE_CODE + '"]').checked = "checked";
                 objectType = OBJECT_TYPE.COMPOSITE_CODE;
@@ -55,12 +56,29 @@ function draw() {
                 document.querySelector('input[value="' + OBJECT_TYPE.ENDIF + '"]').checked = "checked";
                 objectType = OBJECT_TYPE.ENDIF;
             } else if(objectType == OBJECT_TYPE.ENDIF) {
+                document.querySelector('input[value="' + OBJECT_TYPE.FORLOOP + '"]').checked = "checked";
+                objectType = OBJECT_TYPE.FORLOOP;
+            } else if(objectType == OBJECT_TYPE.FORLOOP) {
+                document.querySelector('input[value="' + OBJECT_TYPE.ENDFOR + '"]').checked = "checked";
+                objectType = OBJECT_TYPE.ENDFOR;
+            } else if(objectType == OBJECT_TYPE.ENDFOR) {
                 document.querySelector('input[value="' + OBJECT_TYPE.SERVICE_CALL + '"]').checked = "checked";
                 objectType = OBJECT_TYPE.SERVICE_CALL;
             }
         }
     });
     
+
+    document.getElementById("addEntity").addEventListener("click", function() {
+        addEntity(document.getElementById("entityName").value);
+        document.getElementById("entityName").value = "";
+    });
+    document.getElementById("entityName").addEventListener("keydown", function(event) {
+        if(event.keyCode == 13) {
+            addEntity(document.getElementById("entityName").value);
+            document.getElementById("entityName").value = "";
+        }
+    });
     //addEntryPoint(composite);
 }
 
@@ -68,6 +86,8 @@ function generateWorkflow(composite) {
     var tempValue = "";
     var endValue = "";
     
+    endValue = endValue + "START " + document.getElementById("inputs").value;
+
     for(var i = 0; i < composite.callsFromEntity.length; i++) {
         var node = composite.callsFromEntity[i];
         
@@ -82,10 +102,19 @@ function generateWorkflow(composite) {
         }
     }
     
+    endValue = endValue + "\nRETURN " + document.getElementById("output").value;
+
     return endValue;
 }
 
-var s;
+function addEntity(name) {
+    var entity = new Entity(s, name, services[services.length-1]);
+    entity.draw();
+
+    services.push(entity);
+}
+
+var s, services;
 var clickState = {
     state: CLICK_STATE.NO_CLICK
 };

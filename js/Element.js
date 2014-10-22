@@ -25,7 +25,7 @@ Element.prototype.onElementClick = function(entity, mouseevent) {
         }
     } else if(objectType == OBJECT_TYPE.COMPOSITE_CODE) {
         
-        var codeText = prompt("Enter the code you want");
+        var codeText = prompt("Enter the code you want", "a = 3");
         var compositeCode = new CompositeCode(
             this.snap,
             codeText,
@@ -38,7 +38,7 @@ Element.prototype.onElementClick = function(entity, mouseevent) {
         
     } else if(objectType == OBJECT_TYPE.IF) {
         
-        var conditionText = prompt("Enter the full condition for the IF");
+        var conditionText = prompt("Enter the full condition for the IF", "var1 != null");
         var conditionnal = new ConditionnalIf(
             this.snap,
             conditionText,
@@ -68,6 +68,28 @@ Element.prototype.onElementClick = function(entity, mouseevent) {
         conditionnal.draw();
         
         entity.callsFromEntity.push(conditionnal);
+    } else if(objectType == OBJECT_TYPE.FORLOOP) {
+
+        var conditionText = prompt("Enter the full condition for FOR loop", "i = 0; i < var1; i++");
+        var conditionnal = new ForLoop(
+            this.snap,
+            conditionText,
+            entity.getObject().getBBox().cx,
+            mouseevent.clientY
+        );
+        conditionnal.draw();
+
+        entity.callsFromEntity.push(conditionnal);
+    } else if(objectType == OBJECT_TYPE.ENDFOR) {
+
+        var endfor = new EndFor(
+            this.snap,
+            entity.getObject().getBBox().cx,
+            mouseevent.clientY
+        );
+        endfor.draw();
+
+        entity.callsFromEntity.push(endfor);
     }
 }
 
