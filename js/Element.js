@@ -5,10 +5,15 @@ function Element(s) {
     this.next = undefined;
 }
 
-Element.prototype.onElementClick = function(entity, mouseevent) {
+Element.prototype.onElementClick = function(entity, me) {
     // Get the selected object type
     objectType = document.querySelector('input[name="objectType"]:checked').value;
     
+    var mouseevent = {
+        clientX: me.clientX,
+        clientY: me.clientY + window.scrollY
+    };
+
     if(objectType == OBJECT_TYPE.SERVICE_CALL) {
         if(clickState.state == CLICK_STATE.NO_CLICK) {
             this.addClickPoint(entity.getObject().getBBox().cx, mouseevent.clientY);
@@ -34,7 +39,8 @@ Element.prototype.onElementClick = function(entity, mouseevent) {
         );
         compositeCode.draw();
         
-        entity.callsFromEntity.push(compositeCode);
+        //entity.callsFromEntity.push(compositeCode);
+        entity.push(compositeCode);
         
     } else if(objectType == OBJECT_TYPE.IF) {
         
@@ -47,7 +53,8 @@ Element.prototype.onElementClick = function(entity, mouseevent) {
         );
         conditionnal.draw();
         
-        entity.callsFromEntity.push(conditionnal);
+        //entity.callsFromEntity.push(conditionnal);
+        entity.push(conditionnal);
     } else if(objectType == OBJECT_TYPE.ELSE) {
         
         var conditionnal = new ConditionnalElse(
@@ -57,7 +64,8 @@ Element.prototype.onElementClick = function(entity, mouseevent) {
         );
         conditionnal.draw();
         
-        entity.callsFromEntity.push(conditionnal);
+        //entity.callsFromEntity.push(conditionnal);
+        entity.push(conditionnal);
     } else if(objectType == OBJECT_TYPE.ENDIF) {
         
         var conditionnal = new ConditionnalEndIf(
@@ -67,7 +75,8 @@ Element.prototype.onElementClick = function(entity, mouseevent) {
         );
         conditionnal.draw();
         
-        entity.callsFromEntity.push(conditionnal);
+        //entity.callsFromEntity.push(conditionnal);
+        entity.push(conditionnal);
     } else if(objectType == OBJECT_TYPE.FORLOOP) {
 
         var conditionText = prompt("Enter the full condition for FOR loop", "i = 0; i < var1; i++");
@@ -79,7 +88,8 @@ Element.prototype.onElementClick = function(entity, mouseevent) {
         );
         conditionnal.draw();
 
-        entity.callsFromEntity.push(conditionnal);
+        //entity.callsFromEntity.push(conditionnal);
+        entity.push(conditionnal);
     } else if(objectType == OBJECT_TYPE.ENDFOR) {
 
         var endfor = new EndFor(
@@ -89,7 +99,8 @@ Element.prototype.onElementClick = function(entity, mouseevent) {
         );
         endfor.draw();
 
-        entity.callsFromEntity.push(endfor);
+        //entity.callsFromEntity.push(endfor);
+        entity.push(endfor);
     }
 }
 
@@ -179,7 +190,7 @@ Element.prototype.link = function() {
     assignment.previous = sCall;
     
     if(clickState.target instanceof Entity) {
-        clickState.target.callsFromEntity.push(sCall);
+        clickState.target.push(sCall);
     }
     
     if(!chainStart) {

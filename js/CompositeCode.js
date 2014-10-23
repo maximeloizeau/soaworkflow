@@ -37,12 +37,12 @@ CompositeCode.prototype.draw = function() {
       fontSize: 14,
       textAnchor: 'center'
     });
-}
+};
 
 CompositeCode.prototype.getObject = function() {
     return this.rect;
-}
+};
 
 CompositeCode.prototype.getWorkflowCode = function() {
     return this.value;
-}
+};

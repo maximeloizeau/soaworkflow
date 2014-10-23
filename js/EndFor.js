@@ -41,3 +41,18 @@ EndFor.prototype.draw = function() {
     }
 };
 
+// TODO : getObject that returns the loop frame ?
+
+EndFor.prototype.getObject = function() {
+    var fakeObject = {
+        x: this.x,
+        y: this.y
+    };
+    fakeObject.getBBox = function() {
+        return {
+            x: this.x,
+            y: this.y
+        };
+    };
+    return fakeObject;
+}

@@ -62,16 +62,57 @@ Entity.prototype.draw = function() {
       fontSize: 20,
       textAnchor: 'left'
     });
-}   
+};
 
 Entity.prototype.getObject = function() {
     return this.lifeLine;
-}
+};
 
 Entity.prototype.getWorkflowCode = function() {
     return "";
-}
+};
 
 Entity.prototype.getServiceName = function() {
     return this.name;
-}
+};
+
+Entity.prototype.push = function(el) {
+    var compare = function(p1, p2) {
+        console.log(p1, p2);
+        var x1 = p1.getObject().getBBox().x,
+            y1 = p1.getObject().getBBox().y,
+            x2 = p2.getObject().getBBox().x,
+            y2 = p2.getObject().getBBox().y;
+
+        if(x1 <= x2 && y1 <= y2 ||
+           y1 <= y2 && x1 >= x2) {
+            console.log('p1 higher than p2');
+            return 1;
+        } else {
+            console.log('p1 lower than p2');
+            return -1;
+        }
+    };
+
+    var locationOf = function (element, array, start, end) {
+        start = start || 0;
+        end = end || array.length;
+        var pivot = parseInt(start + (end - start) / 2, 10);
+
+        //if (array[pivot] === element) return pivot;
+
+        if (end - start <= 1) {
+            return compare(array[pivot], element) == -1 ? pivot - 1 : pivot;
+        } else if (compare(array[pivot], element) == 1) {
+            return locationOf(element, array, pivot, end);
+        } else {
+            return locationOf(element, array, start, pivot);
+        }
+    };
+
+    if(this.callsFromEntity.length == 0) {
+        this.callsFromEntity.push(el);
+    } else {
+        this.callsFromEntity.splice(locationOf(el, this.callsFromEntity) + 1, 0, el);
+    }
+};
