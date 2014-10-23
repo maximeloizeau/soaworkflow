@@ -7,28 +7,30 @@ function Element(s) {
 
 Element.prototype.onElementClick = function(entity, me) {
     // Get the selected object type
-    objectType = document.querySelector('input[name="objectType"]:checked').value;
+    editor.objectType = document.querySelector('input[name="objectType"]:checked').value;
     
     var mouseevent = {
         clientX: me.clientX,
         clientY: me.clientY + window.scrollY
     };
 
-    if(objectType == OBJECT_TYPE.SERVICE_CALL) {
-        if(clickState.state == CLICK_STATE.NO_CLICK) {
+    this.expandDrawing(mouseevent);
+
+    if(editor.objectType == editor.OBJECT_TYPE.SERVICE_CALL) {
+        if(editor.clickState.state == editor.CLICK_STATE.NO_CLICK) {
             this.addClickPoint(entity.getObject().getBBox().cx, mouseevent.clientY);
             
-            clickState.target = entity;
-            clickState.targetMouse = mouseevent;
-            clickState.state = CLICK_STATE.FIRST_CLICK;
-        } else if(clickState.state == CLICK_STATE.FIRST_CLICK) {
+            editor.clickState.target = entity;
+            editor.clickState.targetMouse = mouseevent;
+            editor.clickState.state = editor.CLICK_STATE.FIRST_CLICK;
+        } else if(editor.clickState.state == editor.CLICK_STATE.FIRST_CLICK) {
             this.removeClickPoint();
             
-            clickState.dest = entity;
-            clickState.destMouse = mouseevent;
+            editor.clickState.dest = entity;
+            editor.clickState.destMouse = mouseevent;
             this.link();
         }
-    } else if(objectType == OBJECT_TYPE.COMPOSITE_CODE) {
+    } else if(editor.objectType == editor.OBJECT_TYPE.COMPOSITE_CODE) {
         
         var codeText = prompt("Enter the code you want", "a = 3");
         var compositeCode = new CompositeCode(
@@ -42,7 +44,7 @@ Element.prototype.onElementClick = function(entity, me) {
         //entity.callsFromEntity.push(compositeCode);
         entity.push(compositeCode);
         
-    } else if(objectType == OBJECT_TYPE.IF) {
+    } else if(editor.objectType == editor.OBJECT_TYPE.IF) {
         
         var conditionText = prompt("Enter the full condition for the IF", "var1 != null");
         var conditionnal = new ConditionnalIf(
@@ -55,7 +57,7 @@ Element.prototype.onElementClick = function(entity, me) {
         
         //entity.callsFromEntity.push(conditionnal);
         entity.push(conditionnal);
-    } else if(objectType == OBJECT_TYPE.ELSE) {
+    } else if(editor.objectType == editor.OBJECT_TYPE.ELSE) {
         
         var conditionnal = new ConditionnalElse(
             this.snap,
@@ -66,7 +68,7 @@ Element.prototype.onElementClick = function(entity, me) {
         
         //entity.callsFromEntity.push(conditionnal);
         entity.push(conditionnal);
-    } else if(objectType == OBJECT_TYPE.ENDIF) {
+    } else if(editor.objectType == editor.OBJECT_TYPE.ENDIF) {
         
         var conditionnal = new ConditionnalEndIf(
             this.snap,
@@ -77,7 +79,7 @@ Element.prototype.onElementClick = function(entity, me) {
         
         //entity.callsFromEntity.push(conditionnal);
         entity.push(conditionnal);
-    } else if(objectType == OBJECT_TYPE.FORLOOP) {
+    } else if(editor.objectType == editor.OBJECT_TYPE.FORLOOP) {
 
         var conditionText = prompt("Enter the full condition for FOR loop", "i = 0; i < var1; i++");
         var conditionnal = new ForLoop(
@@ -90,7 +92,7 @@ Element.prototype.onElementClick = function(entity, me) {
 
         //entity.callsFromEntity.push(conditionnal);
         entity.push(conditionnal);
-    } else if(objectType == OBJECT_TYPE.ENDFOR) {
+    } else if(editor.objectType == editor.OBJECT_TYPE.ENDFOR) {
 
         var endfor = new EndFor(
             this.snap,
@@ -102,20 +104,20 @@ Element.prototype.onElementClick = function(entity, me) {
         //entity.callsFromEntity.push(endfor);
         entity.push(endfor);
     }
-}
+};
 
 Element.prototype.addClickPoint = function(x, y) {
     this.removeClickPoint();
     
-    clickState.clickPoint = this.snap.circle(x, y - 5, 5);
-    clickState.clickPoint.attr({
+    editor.clickState.clickPoint = this.snap.circle(x, y - 5, 5);
+    editor.clickState.clickPoint.attr({
         fill: "#d32101"
     });
-}
+};
 
 Element.prototype.removeClickPoint = function() {
-    if(clickState.clickPoint) {
-        clickState.clickPoint.remove();
+    if(editor.clickState.clickPoint) {
+        editor.clickState.clickPoint.remove();
     }
 }
 
@@ -126,34 +128,34 @@ Element.prototype.link = function() {
     var sCall = new ServiceCall(
         this.snap,
         serviceName,
-        clickState.dest,
-        clickState.dest.getObject().getBBox().cx,
-        clickState.destMouse.clientY
+        editor.clickState.dest,
+        editor.clickState.dest.getObject().getBBox().cx,
+        editor.clickState.destMouse.clientY
     );
     sCall.draw();
     
     // Create link
     var endX;
-    if(clickState.target.getObject().getBBox().cx > sCall.getObject().getBBox().x) {
+    if(editor.clickState.target.getObject().getBBox().cx > sCall.getObject().getBBox().x) {
         endX = sCall.getObject().getBBox().x2;
     } else {
         endX = sCall.getObject().getBBox().x;
     }
     
     var startX;
-    var f = Math.abs(clickState.target.getObject().getBBox().x - endX),
-        e = Math.abs(clickState.target.getObject().getBBox().x2 - endX);
+    var f = Math.abs(editor.clickState.target.getObject().getBBox().x - endX),
+        e = Math.abs(editor.clickState.target.getObject().getBBox().x2 - endX);
     if(f > e) {
-        startX = clickState.target.getObject().getBBox().x2;
+        startX = editor.clickState.target.getObject().getBBox().x2;
     } else {
-        startX = clickState.target.getObject().getBBox().x;
+        startX = editor.clickState.target.getObject().getBBox().x;
     }
     var sArrow = new Arrow(
         this.snap,
         startX, 
-        clickState.destMouse.clientY,
+        editor.clickState.destMouse.clientY,
         endX,
-        clickState.destMouse.clientY
+        editor.clickState.destMouse.clientY
     );
     sArrow.draw();
     
@@ -163,8 +165,8 @@ Element.prototype.link = function() {
     var assignment = new Assignment(
         this.snap,
         serviceName,
-        clickState.target.getObject().getBBox().cx,
-        clickState.destMouse.clientY + sCall.getObject().getBBox().height
+        editor.clickState.target.getObject().getBBox().cx,
+        editor.clickState.destMouse.clientY + sCall.getObject().getBBox().height
     );
     assignment.draw();
     
@@ -185,21 +187,21 @@ Element.prototype.link = function() {
     );
     returnArrow.draw();
     
-    sCall.previous = clickState.dest;
+    sCall.previous = editor.clickState.dest;
     sCall.next = assignment;
     assignment.previous = sCall;
     
-    if(clickState.target instanceof Entity) {
-        clickState.target.push(sCall);
+    if(editor.clickState.target instanceof Entity) {
+        editor.clickState.target.push(sCall);
     }
     
-    if(!chainStart) {
-        chainStart = sCall;
+    if(!editor.chainStart) {
+        editor.chainStart = sCall;
     }
     
 
     // Reset click state
-    clickState.state = CLICK_STATE.NO_CLICK;
-    clickState.target = undefined;
-    clickState.dest = undefined;
-}
+    editor.clickState.state = editor.CLICK_STATE.NO_CLICK;
+    editor.clickState.target = undefined;
+    editor.clickState.dest = undefined;
+};

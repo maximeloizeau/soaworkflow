@@ -40,12 +40,12 @@ Assignment.prototype.draw = function() {
       fontSize: 16,
       textAnchor: 'left'
     });
-}
+};
 
 Assignment.prototype.getObject = function() {
     return this.rect;
-}
+};
 
 Assignment.prototype.getWorkflowCode = function() {
     return "";
-}
+};

@@ -38,12 +38,12 @@ ConditionnalIf.prototype.draw = function() {
       textAnchor: 'left'
     });
     
-}
+};
 
 ConditionnalIf.prototype.getObject = function() {
     return this.rect;
-}
+};
 
 ConditionnalIf.prototype.getWorkflowCode = function() {
     return "if(" + this.condition + ") {";
-}
+};

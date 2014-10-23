@@ -1,3 +1,5 @@
+/* global Element: false, services: true */
+
 function Entity(s, name, nextTo) {
     Element.call(this, s);
     
@@ -8,6 +10,10 @@ function Entity(s, name, nextTo) {
         fill: "#7a6ece",
         stroke: "#000",
         strokeWidth: 1
+    };
+    this.LIFE_ATTR = {
+        stroke: "#199127",
+        strokeWidth: 6
     };
     
     this.snap = s;
@@ -36,20 +42,19 @@ Entity.prototype.draw = function() {
         lineX, lineY,
         lineX, lineY + this.SERVICE_LIFELINE
     );
-    this.lifeLine.attr({
-        stroke: "#199127",
-        strokeWidth: 6
-    });
+    this.lifeLine.attr(this.LIFE_ATTR);
     this.lifeLine.addClass("clickable");
     
     this.lifeLine.click(this.onElementClick.bind(this, this));
     
+
     this.rect = this.snap.rect(
         this.x, this.y,
         this.SERVICE_WIDTH, this.SERVICE_HEIGHT
     );
     this.rect.attr(this.SERVICE_ATTR);
     
+
     // TODO : fix the centering
     var size = this.name.length * 5;
     this.text = this.snap.text(
@@ -78,7 +83,6 @@ Entity.prototype.getServiceName = function() {
 
 Entity.prototype.push = function(el) {
     var compare = function(p1, p2) {
-        console.log(p1, p2);
         var x1 = p1.getObject().getBBox().x,
             y1 = p1.getObject().getBBox().y,
             x2 = p2.getObject().getBBox().x,
@@ -86,10 +90,8 @@ Entity.prototype.push = function(el) {
 
         if(x1 <= x2 && y1 <= y2 ||
            y1 <= y2 && x1 >= x2) {
-            console.log('p1 higher than p2');
             return 1;
         } else {
-            console.log('p1 lower than p2');
             return -1;
         }
     };
@@ -110,9 +112,33 @@ Entity.prototype.push = function(el) {
         }
     };
 
-    if(this.callsFromEntity.length == 0) {
+    if(this.callsFromEntity.length === 0) {
         this.callsFromEntity.push(el);
     } else {
         this.callsFromEntity.splice(locationOf(el, this.callsFromEntity) + 1, 0, el);
     }
+};
+
+Entity.prototype.extendLifeLine = function(length) {
+    this.lifeLine = this.snap.line(
+        this.lifeLine.getBBox().x2,
+        this.lifeLine.getBBox().y2,
+        this.lifeLine.getBBox().x2,
+        this.lifeLine.getBBox().y2 + length
+    );
+    this.lifeLine.attr(this.LIFE_ATTR);
+    this.lifeLine.addClass("clickable");
+    this.lifeLine.click(this.onElementClick.bind(this, this));
+};
+
+Entity.prototype.expandDrawing = function(me) {
+    var MINIMUM_FREE_SPACE = 100;
+
+    if(this.lifeLine.getBBox().y2 < me.clientY + MINIMUM_FREE_SPACE) {
+        editor.services.forEach(function(service) {
+            service.extendLifeLine(MINIMUM_FREE_SPACE);
+        });
+    }
+
+    this.snap.node.style.height = this.snap.node.style.clientHeight + 100 + "px";
 };

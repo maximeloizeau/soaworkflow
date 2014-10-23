@@ -1,5 +1,5 @@
 function Arrow(s, x1, y1, x2, y2) {
-    this.snap = s;
+    this.snap = editor.snap;
     
     this.x1 = x1;
     this.y1 = y1;

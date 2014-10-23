@@ -20,7 +20,7 @@ EndFor.prototype.draw = function() {
     var forloop = null;
     var forloopPosition = -1;
 
-    var elements = services[0].callsFromEntity;
+    var elements = editor.services[0].callsFromEntity;
     for(var i = 0; i < elements.length; i++) {
         if(elements[i] instanceof ForLoop && !elements[i].complete) {
             var diff = (this.y - elements[i].getObject().getBBox().y);
@@ -32,7 +32,7 @@ EndFor.prototype.draw = function() {
         }
     }
 
-    var extremeX = services[services.length - 1].getObject().getBBox().x + 125;
+    var extremeX = editor.services[editor.services.length - 1].getObject().getBBox().x + 125;
 
     if(forloop) {
         forloop.setFrame(extremeX, this.y);

@@ -1,7 +1,6 @@
 <html>
     <head>
         <script src="lib/snap.svg-min.js"></script>
-        <script src="js/diagram.js"></script>
         <script src="js/Editor.js"></script>
         <script src="js/Element.js"></script>
         <script src="js/Arrow.js"></script>
@@ -14,33 +13,45 @@
         <script src="js/ConditionnalEndIf.js"></script>
         <script src="js/ForLoop.js"></script>
         <script src="js/EndFor.js"></script>
+        <script src="js/diagram.js"></script>
         
         <link rel="stylesheet" href="style.css" />
     </head>
     
     <body>
-        <nav id="toolbar">
-            <input type="text" id="entityName" /><button id="addEntity">Add entity</button>
+        <div id="homepage">
+            <button id="startEditor">Workflow editor</button>
+            <button id="startParser">Workflow parser</button>
+        </div>
 
-            <label class="labelinput" for="inputs">Input parameters (separated by commas) :</label>
-            <input type="text" id="inputs" />
 
-            <label class="labelinput" for="output">Output parameter :</label>
-            <input type="text" id="output" />
+        <div id="editor">
+            <nav id="toolbar">
+                <input type="text" id="entityName" /><button id="addEntity">Add entity</button>
 
-            <label class="toggle-btn"><input type="radio" name="objectType" value="serviceCall" checked="checked"/>Service call</label>
-            <label class="toggle-btn"><input type="radio" name="objectType" value="compositeCode"/>Composite code</label>
-            <label class="toggle-btn"><input type="radio" name="objectType" value="if"/>If</label>
-            <label class="toggle-btn"><input type="radio" name="objectType" value="else"/>Else</label>
-            <label class="toggle-btn"><input type="radio" name="objectType" value="endIf"/>EndIf</label>
-            <label class="toggle-btn"><input type="radio" name="objectType" value="forLoop"/>ForLoop</label>
-            <label class="toggle-btn"><input type="radio" name="objectType" value="endFor"/>EndFor</label>
-            
-            <button id="generate">Generate</button>
-            
-            <textarea id="generated-workflow" rows=20></textarea>
-        </nav>
-        <svg id="svg"></svg>
+                <label class="labelinput" for="inputs">Input parameters (separated by commas) :</label>
+                <input type="text" id="inputs" />
+
+                <label class="labelinput" for="output">Output parameter :</label>
+                <input type="text" id="output" />
+
+                <label class="toggle-btn"><input type="radio" name="objectType" value="serviceCall" checked="checked"/>Service call</label>
+                <label class="toggle-btn"><input type="radio" name="objectType" value="compositeCode"/>Composite code</label>
+                <label class="toggle-btn"><input type="radio" name="objectType" value="if"/>If</label>
+                <label class="toggle-btn"><input type="radio" name="objectType" value="else"/>Else</label>
+                <label class="toggle-btn"><input type="radio" name="objectType" value="endIf"/>EndIf</label>
+                <label class="toggle-btn"><input type="radio" name="objectType" value="forLoop"/>ForLoop</label>
+                <label class="toggle-btn"><input type="radio" name="objectType" value="endFor"/>EndFor</label>
+
+                <button id="generate">Generate</button>
+
+                <textarea id="generated-workflow" rows=20></textarea>
+            </nav>
+            <div id="svgpanel">
+                <svg id="svg" height="2000px" width="2000px"></svg>
+            </div>
+        </div>
+
     </body>
 </html>
 
