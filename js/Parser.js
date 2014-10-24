@@ -1,0 +1,99 @@
+/* global document: false, parser: true */
+
+function Parser() {
+    this.TOKENS = {
+        START: "START",
+        FOR: "for",
+        IF: "if",
+        ELSE: "else"
+    };
+
+    this.workflow = {};
+    this.stack = [];
+}
+
+Parser.prototype.start = function() {
+    document.getElementById('parser').style.display = "block";
+    document.getElementById('homepage').style.display = "none";
+
+
+    document.getElementById('startParsing').addEventListener('click', function() {
+       parser.startParser(document.getElementById('workflowToParse').value);
+    });
+};
+
+Parser.prototype.startParser = function(workflow) {
+    var startsWith = function(str, strToFind) {
+        var r = new RegExp("^" + strToFind, "i");
+        return r.test(str);
+    };
+
+    var isServiceCall = function(str) {
+        // TODO authorize 0 parameters ?
+        var r = /((?!T)(?!H)(?!I)(?!S)[a-z0-9]+)\.[a-z0-9]+\(([a-z0-9\[\]]+(,[a-z0-9\[\]]+)*)*\)$/i;
+        return r.test(str);
+    };
+
+
+    var instructions = workflow.replace(/ /g, "").split('\n');
+    instructions.forEach(function(instr) {
+        //console.log(instr);
+
+        if(startsWith(instr, parser.TOKENS.START)) {
+            parser.workflow.inputParameters = instr.replace("START", "").split(',');
+        } else if(startsWith(instr, parser.TOKENS.FOR)) {
+            var forCondition = instr.substring(4, instr.indexOf(")"));
+            console.log("Drawing -> for " + forCondition);
+
+            //if(instr.indexOf("{") > 0) {
+                parser.stack.push(parser.TOKENS.FOR);
+            //}
+        } else if(startsWith(instr, parser.TOKENS.IF)) {
+            var ifCondition = instr.substring(3, instr.indexOf(")"));
+            console.log("Drawing -> if " + ifCondition);
+
+            if(instr.indexOf("{") > 0) {
+                parser.stack.push(parser.TOKENS.IF);
+            }
+        } else if(startsWith(instr, parser.TOKENS.ELSE)) {
+            console.log("Drawing -> else ");
+            //if(instr.indexOf("{") > 0) {
+                parser.stack.push(parser.TOKENS.ELSE);
+            //}
+        } else if(isServiceCall(instr)) {
+            var serviceCall = instr.split('.');
+            var serviceName = serviceCall[0];
+            var serviceMethod = serviceCall[1];
+            var affect = "";
+
+            if(serviceName.indexOf("=") > 0) {
+                var splitted = serviceName.split("=");
+                affect = splitted[0];
+                serviceName = splitted[1];
+            }
+            console.log("Drawing service call : " + serviceName + " --> " + serviceMethod);
+        } else if(instr.length > 0 && instr.indexOf("}") < 0 && instr.indexOf("{") < 0) {
+            console.log("Drawing code : " + instr);
+        }
+
+
+        // Detect end of blocks
+        for(var i = 0; i < instr.length; i++) {
+            if(instr[i] == '}') {
+                var block = parser.stack.pop();
+
+                switch(block) {
+                    case parser.TOKENS.FOR:
+                        console.log("ENDFOR");
+                        break;
+                    case parser.TOKENS.IF:
+                        console.log("ENDIF");
+                        break;
+                    case parser.TOKENS.ELSE:
+                        console.log("ENDELSE");
+                        break;
+                }
+            }
+        }
+    });
+};

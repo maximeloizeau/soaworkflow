@@ -2,6 +2,7 @@
     <head>
         <script src="lib/snap.svg-min.js"></script>
         <script src="js/Editor.js"></script>
+        <script src="js/Parser.js"></script>
         <script src="js/Element.js"></script>
         <script src="js/Arrow.js"></script>
         <script src="js/Assignment.js"></script>
@@ -24,6 +25,39 @@
             <button id="startParser">Workflow parser</button>
         </div>
 
+        <div id="parser">
+            <textarea id="workflowToParse" cols=90 rows=40>
+START ccData, userId, odds, bets, profit, winings
+    events = SportsEventsService.getSportEvents()
+
+    FOR (i=0; i<events.length; i++){
+        odds[i] = OddsService.requestOdds(events[i])
+    }
+
+    FOR (i=0; i<events.length; i++){
+        am = this.getAmount(events[i])
+        ch = this.getChoice(events[i])
+
+        bets[i] = BetService.placeBet(events[i], userId, ch, am)
+    }
+
+    sum = this.getTotalAmount()
+    result = BankService.makePayment(ccData, sum)
+
+    IF (result == true) {
+        FOR (i=0; i<events.length; i++){
+            res = SportsEventsService.requestResult(events[i])
+            profit[i] = OddsService.requestProfits(res, bets[i])
+        }
+
+        winings = BankService.requestPayment(ccData, profit)
+        this.resetTotalAmount()
+    }
+
+RETURN winings
+            </textarea>
+            <button id="startParsing">Parse</button>
+        </div>
 
         <div id="editor">
             <nav id="toolbar">
