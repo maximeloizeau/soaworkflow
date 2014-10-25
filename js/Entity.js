@@ -148,3 +148,11 @@ Entity.prototype.expandDrawing = function(me) {
 
     this.snap.node.style.height = this.snap.node.style.clientHeight + 100 + "px";
 };
+
+Entity.prototype.toColor = function() {
+    this.rect.attr(this.SERVICE_ATTR);
+
+    this.composition.forEach(function(el) {
+        el.toColor();
+    });
+};

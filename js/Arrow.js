@@ -1,5 +1,7 @@
 function Arrow(s, x1, y1, x2, y2) {
     this.snap = editor.snap;
+
+    this.composition = [];
     
     this.x1 = x1;
     this.y1 = y1;
@@ -55,8 +57,19 @@ Arrow.prototype.draw = function() {
     this.arrow.attr({
         fill: "#9d9d9d"
     });
-}
+
+    this.composition.push(this.arrow);
+    this.composition.push(this.line);
+};
 
 Arrow.prototype.getObject = function() {
     return this.line;
-}
+};
+
+Arrow.prototype.toGrey = function() {
+
+};
+
+Arrow.prototype.toColor = function() {
+
+};

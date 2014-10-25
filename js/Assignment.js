@@ -40,6 +40,8 @@ Assignment.prototype.draw = function() {
       fontSize: 16,
       textAnchor: 'left'
     });
+
+    this.composition.push(this.rect);
 };
 
 Assignment.prototype.getObject = function() {
@@ -48,4 +50,12 @@ Assignment.prototype.getObject = function() {
 
 Assignment.prototype.getWorkflowCode = function() {
     return "";
+};
+
+Assignment.prototype.toColor = function() {
+    this.rect.attr({
+        fill: "#e58282",
+        stroke: "#000",
+        strokeWidth: 0.5
+    });
 };

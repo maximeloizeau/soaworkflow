@@ -1,4 +1,4 @@
-/* global document: false, parser: true, editor: false */
+/* global document: false, parser: true, editor: true, Editor: false */
 
 function Parser() {
     this.TOKENS = {
@@ -150,5 +150,57 @@ Parser.prototype.startParser = function(workflow) {
                 }
             }
         }
+    });
+};
+
+Parser.prototype.workflowInExecution = function() {
+    editor.services[0].callsFromEntity.forEach(function(service) {
+        service.toGrey();
+    });
+    editor.services.forEach(function(service) {
+        service.toGrey();
+    });
+};
+
+Parser.prototype.highlight = function(name) {
+    var startLookingAt = 0;
+    if(this.lastHighlight) {
+        this.lastHighlight.toGrey();
+
+        startLookingAt = editor.services[0].callsFromEntity.indexOf(this.lastHighlight);
+        this.lastHighlight = null;
+    }
+
+    var splittedName = name.split('.');
+    for(var i = 0; i<editor.services[0].callsFromEntity.length; i++) {
+        var e = editor.services[0].callsFromEntity[i];
+        if( e instanceof ServiceCall &&
+            e.name.split('(')[0] == splittedName[1] &&
+            e.serviceParent.name == splittedName[0] ) {
+            this.lastHighlight = e;
+
+            break;
+        } else if(e instanceof CompositeCode) {
+            var r = new RegExp(name.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&") + "\([a-z0-9,\\[\\]]*\)", "i");
+
+            if(r.test(e.value)) {
+                this.lastHighlight = e;
+
+                break;
+            }
+        }
+    }
+
+    if(this.lastHighlight) {
+        this.lastHighlight.toColor();
+    }
+};
+
+Parser.prototype.workflowFinished = function() {
+    editor.services[0].callsFromEntity.forEach(function(service) {
+        service.toColor();
+    });
+    editor.services.forEach(function(service) {
+        service.toColor();
     });
 };

@@ -37,6 +37,8 @@ CompositeCode.prototype.draw = function() {
       fontSize: 14,
       textAnchor: 'center'
     });
+
+    this.composition.push(this.rect);
 };
 
 CompositeCode.prototype.getObject = function() {
@@ -45,4 +47,12 @@ CompositeCode.prototype.getObject = function() {
 
 CompositeCode.prototype.getWorkflowCode = function() {
     return this.value;
+};
+
+CompositeCode.prototype.toColor = function() {
+    this.rect.attr({
+        fill: "#d0d683",
+        stroke: "#000",
+        strokeWidth: 0.5
+    });
 };

@@ -24,7 +24,7 @@ ServiceCall.prototype.draw = function() {
     this.rect.click(this.onElementClick.bind(this, this));
    
     this.rect.attr({
-        fill: "#e3e3e3",
+        fill: "#FFA500",
         stroke: "#000",
         strokeWidth: 0.5
     });
@@ -33,6 +33,8 @@ ServiceCall.prototype.draw = function() {
     this.rect.mouseout(this.mouseout.bind(this));    
     
     editor.higherLayer.add(this.rect);
+
+    this.composition.push(this.rect);
 
     this.mouseout();
 };
@@ -91,4 +93,12 @@ ServiceCall.prototype.getWorkflowCode = function() {
     
     text = text + this.serviceParent.getServiceName() + "." + this.name;
     return text;
+};
+
+ServiceCall.prototype.toColor = function() {
+    this.rect.attr({
+        fill: "#FFA500",
+        stroke: "#000",
+        strokeWidth: 0.5
+    });
 };

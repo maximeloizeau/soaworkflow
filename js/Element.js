@@ -1,14 +1,23 @@
+/* global document:false, window:false, editor: false, ServiceCall:false, Assignment:false, Arrow:false, MouseEvent:false, Entity:false */
+
 function Element(s) {
     this.snap = s;
     
     this.previous = undefined;
     this.next = undefined;
+
+    this.composition = [];
 }
 
 Element.prototype.onElementClick = function(entity, me, methodName, varName) {
     // Get the selected object type
     editor.objectType = document.querySelector('input[name="objectType"]:checked').value;
-    
+
+    if(me instanceof MouseEvent) {
+        methodName = undefined;
+        varName = undefined;
+    }
+
     var mouseevent = {
         clientX: me.clientX,
         clientY: me.clientY + window.scrollY
@@ -119,10 +128,12 @@ Element.prototype.removeClickPoint = function() {
     if(editor.clickState.clickPoint) {
         editor.clickState.clickPoint.remove();
     }
-}
+};
 
 Element.prototype.link = function(methodName, variableName) {
     var serviceName;
+
+    // Don't ask the user if in parsing mode
     if(methodName) {
         serviceName = methodName;
     } else {
@@ -201,17 +212,39 @@ Element.prototype.link = function(methodName, variableName) {
     sCall.next = assignment;
     assignment.previous = sCall;
     
+
     if(editor.clickState.target instanceof Entity) {
         editor.clickState.target.push(sCall);
     }
     
+    // Create chain start to be able to parse it later
     if(!editor.chainStart) {
         editor.chainStart = sCall;
     }
     
+    this.composition.push(sCall);
+    this.composition.push(sArrow);
+    this.composition.push(assignment);
+    this.composition.push(returnArrow);
 
     // Reset click state
     editor.clickState.state = editor.CLICK_STATE.NO_CLICK;
     editor.clickState.target = undefined;
     editor.clickState.dest = undefined;
+};
+
+Element.prototype.toGrey = function() {
+    this.composition.forEach(function(element) {
+        if(element instanceof Element || element instanceof Arrow) {
+            element.toGrey();
+        } else {
+            element.attr({
+                fill: "#FFFFFF"
+            });
+        }
+    });
+};
+
+Element.prototype.toColor = function() {
+    console.log("--- Not implemented");
 };
