@@ -25,12 +25,15 @@ Editor.prototype.start = function() {
     };
     this.objectType = this.OBJECT_TYPE.SERVICE_CALL;
 
+    this.lowerLayer = this.snap.g();
+    this.higherLayer = this.snap.g();
+
     var composite = new Entity(this.snap, "Composite");
     composite.draw();
 
     this.services.push(composite);
 
-    this.addEntity("OddsService");
+    //this.addEntity("OddsService");
 
 
     // ###
@@ -114,4 +117,46 @@ Editor.prototype.addEntity = function(name) {
     entity.draw();
 
     this.services.push(entity);
+};
+
+Editor.prototype.addCompositeCode = function(value, y) {
+    var cc = new CompositeCode(this.snap, value, this.services[0].getObject().getBBox().cx, y);
+    cc.draw();
+
+    this.services[0].push(cc);
+};
+
+Editor.prototype.addFor = function(value, y) {
+  var ff = new ForLoop(this.snap, value, this.services[0].getObject().getBBox().cx, y);
+    ff.draw();
+
+    this.services[0].push(ff);
+};
+
+Editor.prototype.addEndFor = function(y) {
+    var ff = new EndFor(this.snap, this.services[0].getObject().getBBox().cx, y);
+    ff.draw();
+
+    this.services[0].push(ff);
+};
+
+Editor.prototype.addIf = function(value, y) {
+  var ff = new ConditionnalIf(this.snap, value, this.services[0].getObject().getBBox().cx, y);
+    ff.draw();
+
+    this.services[0].push(ff);
+};
+
+Editor.prototype.addElse = function(y) {
+    var ff = new ConditionnalEkse(this.snap, this.services[0].getObject().getBBox().cx, y);
+    ff.draw();
+
+    this.services[0].push(ff);
+};
+
+Editor.prototype.addEndIf = function(y) {
+    var ff = new ConditionnalEndIf(this.snap, this.services[0].getObject().getBBox().cx, y);
+    ff.draw();
+
+    this.services[0].push(ff);
 };

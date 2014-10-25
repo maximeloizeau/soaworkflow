@@ -77,6 +77,8 @@ ForLoop.prototype.setFrame = function(endX, endY) {
     this.obj.remove();
     this.obj = frame;
 
+    editor.lowerLayer.add(this.obj);
+
     this.complete = true;
 };
 

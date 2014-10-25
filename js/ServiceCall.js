@@ -32,8 +32,10 @@ ServiceCall.prototype.draw = function() {
     this.rect.mouseover(this.mouseover.bind(this));
     this.rect.mouseout(this.mouseout.bind(this));    
     
+    editor.higherLayer.add(this.rect);
+
     this.mouseout();
-}
+};
 
 ServiceCall.prototype.mouseover = function() {
     if(this.text)
@@ -54,7 +56,7 @@ ServiceCall.prototype.mouseover = function() {
     
     this.text.mouseover(this.mouseover.bind(this));
     this.text.mouseout(this.mouseout.bind(this));
-}
+};
 
 ServiceCall.prototype.mouseout = function() {
     if(this.text)
@@ -75,11 +77,11 @@ ServiceCall.prototype.mouseout = function() {
     
     this.text.mouseover(this.mouseover.bind(this));
     this.text.mouseout(this.mouseout.bind(this));
-}
+};
 
 ServiceCall.prototype.getObject = function() {
     return this.rect;
-}
+};
 
 ServiceCall.prototype.getWorkflowCode = function() {
     var text = "";
@@ -89,4 +91,4 @@ ServiceCall.prototype.getWorkflowCode = function() {
     
     text = text + this.serviceParent.getServiceName() + "." + this.name;
     return text;
-}
+};

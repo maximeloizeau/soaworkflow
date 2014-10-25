@@ -67,6 +67,10 @@ Entity.prototype.draw = function() {
       fontSize: 20,
       textAnchor: 'left'
     });
+
+    editor.lowerLayer.add(this.lifeLine);
+    editor.lowerLayer.add(this.rect);
+    editor.lowerLayer.add(this.text);
 };
 
 Entity.prototype.getObject = function() {
@@ -129,6 +133,8 @@ Entity.prototype.extendLifeLine = function(length) {
     this.lifeLine.attr(this.LIFE_ATTR);
     this.lifeLine.addClass("clickable");
     this.lifeLine.click(this.onElementClick.bind(this, this));
+
+    editor.lowerLayer.add(this.lifeLine);
 };
 
 Entity.prototype.expandDrawing = function(me) {

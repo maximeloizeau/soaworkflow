@@ -5,7 +5,7 @@ function Element(s) {
     this.next = undefined;
 }
 
-Element.prototype.onElementClick = function(entity, me) {
+Element.prototype.onElementClick = function(entity, me, methodName, varName) {
     // Get the selected object type
     editor.objectType = document.querySelector('input[name="objectType"]:checked').value;
     
@@ -28,7 +28,7 @@ Element.prototype.onElementClick = function(entity, me) {
             
             editor.clickState.dest = entity;
             editor.clickState.destMouse = mouseevent;
-            this.link();
+            this.link(methodName, varName);
         }
     } else if(editor.objectType == editor.OBJECT_TYPE.COMPOSITE_CODE) {
         
@@ -121,8 +121,13 @@ Element.prototype.removeClickPoint = function() {
     }
 }
 
-Element.prototype.link = function() {
-    var serviceName = prompt("Enter method name and its argument", "method(arg1, arg2)");
+Element.prototype.link = function(methodName, variableName) {
+    var serviceName;
+    if(methodName) {
+        serviceName = methodName;
+    } else {
+        serviceName = prompt("Enter method name and its argument", "method(arg1, arg2)");
+    }
         
     // Create service call rectangle
     var sCall = new ServiceCall(
@@ -161,10 +166,15 @@ Element.prototype.link = function() {
     
     
     // Create assignment box
-    var serviceName = prompt("Enter variable name", "var1");
+    var varName;
+    if(variableName) {
+        varName = variableName;
+    } else {
+        varName = prompt("Enter variable name", "var1");
+    }
     var assignment = new Assignment(
         this.snap,
-        serviceName,
+        varName,
         editor.clickState.target.getObject().getBBox().cx,
         editor.clickState.destMouse.clientY + sCall.getObject().getBBox().height
     );

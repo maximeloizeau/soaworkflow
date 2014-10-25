@@ -1,14 +1,18 @@
-/* global document: false, parser: true */
+/* global document: false, parser: true, editor: false */
 
 function Parser() {
     this.TOKENS = {
         START: "START",
+        RETURN: "RETURN",
         FOR: "for",
         IF: "if",
         ELSE: "else"
     };
 
-    this.workflow = {};
+    this.workflow = {
+        services: [],
+        higherY: 80
+    };
     this.stack = [];
 }
 
@@ -23,6 +27,15 @@ Parser.prototype.start = function() {
 };
 
 Parser.prototype.startParser = function(workflow) {
+    document.getElementById('parser').style.display = "none";
+    document.getElementById('editor').style.display = "block";
+
+    editor = new Editor();
+    editor.start();
+
+    parser.workflow.composite = editor.services[0];
+
+
     var startsWith = function(str, strToFind) {
         var r = new RegExp("^" + strToFind, "i");
         return r.test(str);
@@ -41,22 +54,31 @@ Parser.prototype.startParser = function(workflow) {
 
         if(startsWith(instr, parser.TOKENS.START)) {
             parser.workflow.inputParameters = instr.replace("START", "").split(',');
+        } else if(startsWith(instr, parser.TOKENS.RETURN)) {
+            parser.workflow.outputParameter = instr.replace("RETURN", "");
         } else if(startsWith(instr, parser.TOKENS.FOR)) {
             var forCondition = instr.substring(4, instr.indexOf(")"));
-            console.log("Drawing -> for " + forCondition);
+
+            editor.addFor(forCondition, parser.workflow.higherY);
+            parser.workflow.higherY = parser.workflow.higherY + 50;
 
             //if(instr.indexOf("{") > 0) {
                 parser.stack.push(parser.TOKENS.FOR);
             //}
         } else if(startsWith(instr, parser.TOKENS.IF)) {
             var ifCondition = instr.substring(3, instr.indexOf(")"));
-            console.log("Drawing -> if " + ifCondition);
 
-            if(instr.indexOf("{") > 0) {
+            editor.addIf(ifCondition, parser.workflow.higherY);
+            parser.workflow.higherY = parser.workflow.higherY + 50;
+
+            //if(instr.indexOf("{") > 0) {
                 parser.stack.push(parser.TOKENS.IF);
-            }
+            //}
         } else if(startsWith(instr, parser.TOKENS.ELSE)) {
-            console.log("Drawing -> else ");
+
+            editor.addElse(parser.workflow.higherY);
+            parser.workflow.higherY = parser.workflow.higherY + 50;
+
             //if(instr.indexOf("{") > 0) {
                 parser.stack.push(parser.TOKENS.ELSE);
             //}
@@ -71,9 +93,38 @@ Parser.prototype.startParser = function(workflow) {
                 affect = splitted[0];
                 serviceName = splitted[1];
             }
-            console.log("Drawing service call : " + serviceName + " --> " + serviceMethod);
+
+            if(parser.workflow.services.indexOf(serviceName) < 0) {
+                parser.workflow.services.push(serviceName);
+                editor.addEntity(serviceName);
+            }
+
+            parser.workflow.composite.onElementClick(
+                parser.workflow.composite,
+                {
+                    clientX: parser.workflow.composite.getObject().getBBox().cx,
+                    clientY: parser.workflow.higherY
+                }
+            );
+
+            for(var i = 0; i < editor.services.length; i++) {
+                if(editor.services[i].name == serviceName) {
+                    editor.services[i].onElementClick(
+                        editor.services[i],
+                        {
+                            clientX: editor.services[i].getObject().getBBox().cx,
+                            clientY: parser.workflow.higherY
+                        },
+                        serviceMethod,
+                        affect
+                    );
+                }
+            }
+
+            parser.workflow.higherY = parser.workflow.higherY + 100;
         } else if(instr.length > 0 && instr.indexOf("}") < 0 && instr.indexOf("{") < 0) {
-            console.log("Drawing code : " + instr);
+            editor.addCompositeCode(instr, parser.workflow.higherY);
+            parser.workflow.higherY = parser.workflow.higherY + 50;
         }
 
 
@@ -84,10 +135,12 @@ Parser.prototype.startParser = function(workflow) {
 
                 switch(block) {
                     case parser.TOKENS.FOR:
-                        console.log("ENDFOR");
+                        editor.addEndFor(parser.workflow.higherY);
+                        parser.workflow.higherY = parser.workflow.higherY + 50;
                         break;
                     case parser.TOKENS.IF:
-                        console.log("ENDIF");
+                        editor.addEndIf(parser.workflow.higherY);
+                        parser.workflow.higherY = parser.workflow.higherY + 50;
                         break;
                     case parser.TOKENS.ELSE:
                         console.log("ENDELSE");
