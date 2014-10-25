@@ -53,9 +53,11 @@ Parser.prototype.startParser = function(workflow) {
         //console.log(instr);
 
         if(startsWith(instr, parser.TOKENS.START)) {
-            parser.workflow.inputParameters = instr.replace("START", "").split(',');
+            parser.workflow.inputParameters = instr.replace(parser.TOKENS.START, "").split(',');
+            document.getElementById("inputs").value = parser.workflow.inputParameters;
         } else if(startsWith(instr, parser.TOKENS.RETURN)) {
-            parser.workflow.outputParameter = instr.replace("RETURN", "");
+            parser.workflow.outputParameter = instr.replace(parser.TOKENS.RETURN, "");
+            document.getElementById("output").value = parser.workflow.outputParameter;
         } else if(startsWith(instr, parser.TOKENS.FOR)) {
             var forCondition = instr.substring(4, instr.indexOf(")"));
 
